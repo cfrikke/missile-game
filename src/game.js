@@ -9,7 +9,7 @@ MG.game = (function () {
         CRASHED:    'crashed'
     }
 
-    var STARTING_LIVES = 5;
+    var STARTING_LIVES = 10;
 
     var LEVEL_NUM_BARRIERS = 20;
 
@@ -18,12 +18,15 @@ MG.game = (function () {
 
     var mLives = STARTING_LIVES;
     var mLevel = 0;
+    var mCrashes = 0;
 
     var mRemainingBarriers = 0;
     var mBarriersToPass = 0;
 
     var mProgress = 0.0;
     var mBestProgress = 0.0;
+
+    var mAppStore;
 
     /* Strings for UI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     var getLevelString = function () {
@@ -92,7 +95,7 @@ MG.game = (function () {
         MG.missile.setAutopilot();
         MG.missile.setVelocity(getPreLevelIdleVelocity(mLevel));
 
-        if (mLevel === 0) {mLives = Infinity;}
+        mLives = Infinity;
 
         mState = GameState.WAIT_START;
     }
@@ -134,7 +137,7 @@ MG.game = (function () {
         } else {
             MG.banner.show(Messages.CRASH.title(), Messages.CRASH.text());
         }
-
+        mCrashes += 1;
         playCrashAnimation()
 
         mState = GameState.CRASHED;
@@ -177,6 +180,8 @@ MG.game = (function () {
             goWaitStartLevel();
 
             rootNode.setAttribute('visibility', 'visible');
+
+            mAppStore = document.getElementById('app-store');
         },
 
 
@@ -267,6 +272,11 @@ MG.game = (function () {
                 break;
             }
 
+
+            mAppStore.setAttribute(
+              'class',
+              mState === GameState.RUNNING || mState === GameState.STARTING ? 'hidden' : ''
+            );
         },
 
         updateDOM: function () {
@@ -338,6 +348,9 @@ MG.game = (function () {
         /* If the player crashes with zero lives remaining the game ends */
         getNumLives: function () {
             return mLives;
+        },
+        getNumCrashes: function() {
+            return mCrashes;
         },
 
         /* Returns the progress through the level as a value between 0 and 1,

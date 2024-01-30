@@ -13,6 +13,7 @@ MG.missile = (function () {
 
     var mState;
 
+    var mCrash = 0;
     var mOffset;
     var mVelocity;
     var mTargetVelocity;
@@ -152,7 +153,6 @@ MG.missile = (function () {
 
         onCrash: function () {
             mVelocity = -Math.abs(mVelocity);
-
             mState = MissileState.CRASHED;
         }
     };

@@ -4,6 +4,7 @@ MG.hud = (function () {
     var mRadar;
     var mSpeedometer;
     var mLevelIndicator;
+    var mCrashCounter;
     var mProgressIndicator;
     var mLifeCounter;
 
@@ -194,16 +195,34 @@ MG.hud = (function () {
                     }
                 };
             } ());
+            // ---------------------------------------------------- Crash Counter
+            mCrashCounter = (function () {
+                var mTextNode = document.createTextNode('');
+                document.getElementById('hud-crash-counter').appendChild(mTextNode);
+                var mCrashCount = 0;
+                return {
+                    update: function (dt) {
+                            mCrashCount = MG.game.getNumCrashes();
+                    },
+
+                    updateDOM: function () {
+                        mTextNode.data = "Fails: " + mCrashCount;
+                    }
+                };
+            } ());
+
 
 
 
             mRootNode.setAttribute('visibility', 'visible');
         },
+        
 
         update: function (dt) {
             mRadar.update(dt);
             mSpeedometer.update(dt);
             mLevelIndicator.update(dt);
+            mCrashCounter.update(dt);
             mProgressIndicator.update(dt);
             mLifeCounter.update(dt);
             mFrameRateIndicator.update(dt);
@@ -213,6 +232,7 @@ MG.hud = (function () {
             mRadar.updateDOM();
             mSpeedometer.updateDOM();
             mLevelIndicator.updateDOM();
+            mCrashCounter.updateDOM();
             mProgressIndicator.updateDOM();
             mLifeCounter.updateDOM();
             mFrameRateIndicator.updateDOM();
